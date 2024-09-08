@@ -1,0 +1,17 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "transmission.fullname" . }}-config
+  namespace: {{ include "transmission.namespace" . }}
+data:
+  {{- if (.Values).ui }}
+  {{- range $key, $value := .Values.ui }}
+    {{ $key | snakecase | upper }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
+  {{- if (.Values).configMap }}
+  {{- range $key, $value := .Values.configMap }}
+    {{ $key | snakecase | upper }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}

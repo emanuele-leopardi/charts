@@ -1,0 +1,122 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "transmission.fullname" . }}
+  namespace: {{ include "transmission.namespace" . }}
+  labels:
+    {{- include "transmission.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "transmission.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        # The following annotations make sure that in case of
+        # update/upgrade a new deployment gets triggered
+        checksum/configmap.yaml: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/install_info: {{ printf "%s-%s" .Chart.Name .Chart.Version | sha256sum }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "transmission.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "transmission.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"      
+      initContainers:
+        - name: custom-webui
+          image: curlimages/curl:latest
+          command:
+            - "/bin/sh"
+            - "-c"
+            - "curl -o- -sL https://github.com/johman10/flood-for-transmission/releases/download/latest/flood-for-transmission.tar.gz | tar xzf - -C /ui"
+          volumeMounts:
+            - name: ui-volume
+              mountPath: /ui
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          ports:
+            - name: http 
+              containerPort: 9091
+              protocol: TCP
+            - name: tcp
+              containerPort: 51413
+              protocol: TCP
+            - name: udp
+              containerPort: 51413
+              protocol: UDP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /downloads
+              name: downloads-volume
+            - mountPath: /config
+              name: config-volume
+            - name: ui-volume
+              mountPath: /ui
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+            - name: PASS
+              valueFrom:
+                secretKeyRef:
+                  name: transmission-secrets
+                  key: transmission-password
+          envFrom:
+            - configMapRef:
+                name: {{ include "transmission.fullname" . }}-config
+                optional: false
+      volumes:
+        - name: downloads-volume
+          hostPath:
+            path: {{ .Values.configMap.downloads | default "/mnt" }}
+            type: DirectoryOrCreate
+        - name: config-volume
+          hostPath:
+            path: {{ .Values.configMap.config | default "/opt/transmission/config" }}
+            type: DirectoryOrCreate
+        - name: ui-volume
+          emptyDir:
+            sizeLimit: 500Mi
+      {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
