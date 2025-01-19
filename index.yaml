@@ -3,7 +3,17 @@ entries:
   transmission:
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2025-01-19T16:56:42.573168082+01:00"
+    created: "2025-01-19T17:12:17.516376606+01:00"
+    description: A Helm chart for Kubernetes
+    digest: 23e5ae9f63cbe7c2a578456bcebf079b8c128b7119620bf1c0a28257711f671d
+    name: transmission
+    type: application
+    urls:
+    - transmission-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 4.0.6
+    created: "2025-01-19T17:12:17.515083443+01:00"
     description: A Helm chart for Kubernetes
     digest: f50d98c87e21df11fe27f8c33abbf0545ae50fd3bcf42695ca6dc5adef947765
     name: transmission
@@ -11,4 +21,4 @@ entries:
     urls:
     - transmission-0.1.0.tgz
     version: 0.1.0
-generated: "2025-01-19T16:56:42.571720216+01:00"
+generated: "2025-01-19T17:12:17.514053494+01:00"
