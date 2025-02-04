@@ -72,6 +72,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
+            - name: "ui-port"
+              containerPort: {{ .Values.portConfigs.hbbs.uiPort.targetPort }}
+              protocol: TCP
             - name: "nat-port"
               containerPort: {{ .Values.portConfigs.hbbs.natPort.targetPort }}
               protocol: TCP
