@@ -3,7 +3,7 @@ entries:
   rustdesk-server:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2025-03-19T22:41:24.38553424+01:00"
+    created: "2025-03-19T22:53:50.02674141+01:00"
     description: A Helm chart for rustdesk-server
     digest: ac76b884518018680cd8bf20bde5d23cce7b0141bf568f388abea7351b1fd0de
     name: rustdesk-server
@@ -24,7 +24,7 @@ entries:
         url: https://raw.githubusercontent.com/obeone/charts/main/public_key.gpg
     apiVersion: v2
     appVersion: v1.6.1
-    created: "2025-03-19T22:41:24.395211916+01:00"
+    created: "2025-03-19T22:53:50.035903084+01:00"
     dependencies:
     - name: common
       repository: https://bjw-s.github.io/helm-charts
@@ -43,12 +43,12 @@ entries:
     kubeVersion: '>=1.16.0-0'
     name: transfer.sh
     urls:
-    - transfer.sh-1.0.0.tgz
+    - transfer-sh-1.0.0.tgz
     version: 1.0.0
   transmission:
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2025-03-19T22:41:24.39963242+01:00"
+    created: "2025-03-19T22:53:50.039237905+01:00"
     description: A Helm chart for Kubernetes
     digest: 23e5ae9f63cbe7c2a578456bcebf079b8c128b7119620bf1c0a28257711f671d
     name: transmission
@@ -58,7 +58,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2025-03-19T22:41:24.397369656+01:00"
+    created: "2025-03-19T22:53:50.037065468+01:00"
     description: A Helm chart for Kubernetes
     digest: f50d98c87e21df11fe27f8c33abbf0545ae50fd3bcf42695ca6dc5adef947765
     name: transmission
@@ -69,7 +69,7 @@ entries:
   weave-gitops:
   - apiVersion: v2
     appVersion: v0.38.0
-    created: "2025-03-19T22:41:24.402265203+01:00"
+    created: "2025-03-19T22:53:50.040830913+01:00"
     description: Weave Gitops is a set of tools and services to aid your interactions
       with Flux
     digest: 379360d207a8432741349b0ae9e016daad7bce686d89c2801793dcdc34543a0b
@@ -78,4 +78,4 @@ entries:
     urls:
     - weave-gitops-4.0.36.tgz
     version: 4.0.36
-generated: "2025-03-19T22:41:24.383013619+01:00"
+generated: "2025-03-19T22:53:50.025388616+01:00"
