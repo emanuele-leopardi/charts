@@ -1,0 +1,11 @@
+apiVersion: v2
+appVersion: v1.6.1
+dependencies:
+- name: common
+  repository: https://bjw-s.github.io/helm-charts
+  version: 3.7.1
+description: Easy and fast file sharing from the command-line.
+home: https://github.com/LibreTranslate/LibreTranslate
+kubeVersion: '>=1.16.0-0'
+name: transfer.sh
+version: 1.0.0
