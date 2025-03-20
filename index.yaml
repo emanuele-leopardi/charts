@@ -3,7 +3,7 @@ entries:
   rustdesk-server:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2025-03-19T23:01:21.420442053+01:00"
+    created: "2025-03-20T09:24:06.693940374+01:00"
     description: A Helm chart for rustdesk-server
     digest: ac76b884518018680cd8bf20bde5d23cce7b0141bf568f388abea7351b1fd0de
     name: rustdesk-server
@@ -12,48 +12,15 @@ entries:
     - rustdesk-server-0.1.0.tgz
     version: 0.1.0
   transfer.sh:
-  - annotations:
-      artifacthub.io/changes: |
-        - kind: changed
-          description: appVersion in values
-      artifacthub.io/maintainers: |
-        - name: obeone
-          email: obeone@obeone.org
-      artifacthub.io/signKey: |
-        fingerprint: B9FE852F28888D27F8C9A11CD33E04CD22E335CE
-        url: https://raw.githubusercontent.com/obeone/charts/main/public_key.gpg
-    apiVersion: v2
-    appVersion: v1.6.1
-    created: "2025-03-19T23:01:21.428707878+01:00"
-    dependencies:
-    - name: common
-      repository: https://bjw-s.github.io/helm-charts
-      version: 3.7.1
-    description: Easy and fast file sharing from the command-line.
-    digest: 0140ed34c8ff4c88671d624f1a59601324e68a298d6ae7849691ad2b6ac99bb2
-    home: https://github.com/LibreTranslate/LibreTranslate
-    keywords:
-    - transfer.sh
-    - file sharing
-    - command-line
-    - cli
-    - transfer
-    - share
-    - transfersh
-    kubeVersion: '>=1.16.0-0'
-    name: transfer.sh
-    urls:
-    - transfer-sh-1.0.0.tgz
-    version: 1.0.0
   - apiVersion: v2
     appVersion: v1.6.1
-    created: "2025-03-19T23:01:21.437094462+01:00"
+    created: "2025-03-20T09:24:06.703215813+01:00"
     dependencies:
     - name: common
       repository: https://bjw-s.github.io/helm-charts
       version: 3.7.1
     description: Easy and fast file sharing from the command-line.
-    digest: b89bda15e79c8684d1e8396615fa7b480549053d06613ca9d5ab832d4fccb8fe
+    digest: 4b79ac699b822ded096c6c4500dd7034cfb6305cec9bc8f5387c57651cc10d1a
     home: https://github.com/LibreTranslate/LibreTranslate
     kubeVersion: '>=1.16.0-0'
     name: transfer.sh
@@ -63,7 +30,7 @@ entries:
   transmission:
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2025-03-19T23:01:21.439336881+01:00"
+    created: "2025-03-20T09:24:06.707636133+01:00"
     description: A Helm chart for Kubernetes
     digest: 23e5ae9f63cbe7c2a578456bcebf079b8c128b7119620bf1c0a28257711f671d
     name: transmission
@@ -73,7 +40,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2025-03-19T23:01:21.438234149+01:00"
+    created: "2025-03-20T09:24:06.705394879+01:00"
     description: A Helm chart for Kubernetes
     digest: f50d98c87e21df11fe27f8c33abbf0545ae50fd3bcf42695ca6dc5adef947765
     name: transmission
@@ -84,7 +51,7 @@ entries:
   weave-gitops:
   - apiVersion: v2
     appVersion: v0.38.0
-    created: "2025-03-19T23:01:21.440817107+01:00"
+    created: "2025-03-20T09:24:06.710177385+01:00"
     description: Weave Gitops is a set of tools and services to aid your interactions
       with Flux
     digest: 379360d207a8432741349b0ae9e016daad7bce686d89c2801793dcdc34543a0b
@@ -93,4 +60,4 @@ entries:
     urls:
     - weave-gitops-4.0.36.tgz
     version: 4.0.36
-generated: "2025-03-19T23:01:21.419139022+01:00"
+generated: "2025-03-20T09:24:06.684626663+01:00"

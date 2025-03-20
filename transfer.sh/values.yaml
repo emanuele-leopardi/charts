@@ -31,7 +31,10 @@ controllers:
           []
           # - secretRef:
           #     name: transfer-sh
-
+        ports:
+          - name: http 
+            containerPort: 8080
+            protocol: TCP
 # -- Configures service settings for the chart.
 service:
   main:
