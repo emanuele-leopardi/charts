@@ -63,17 +63,17 @@ Create the name of the service account to use
 
 {{/*
 Create the correct name for the namespace
-If global namespace let's use it else fullname will be used .
+If a global namespace is set use it, otherwise use the release namespace.
 */}}
 {{- define "transmission.namespace" -}}
 	{{- if .Values.global }}
 		{{- if .Values.global.namespace }}
 			{{- .Values.global.namespace | trunc 63 | trimSuffix "-" }}
 		{{- else }}
-			{{- include "transmission.fullname" . }}
+			{{- .Release.Namespace }}
 		{{- end }}
 	{{- else }}
-		{{- include "transmission.fullname" . }}
+		{{- .Release.Namespace }}
 	{{- end }}
 {{- end }}
 

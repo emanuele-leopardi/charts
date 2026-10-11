@@ -11,12 +11,18 @@ image:
   tag: ""
 
 configMap:
-  tz: "Europe/Rome"
+  tz: UTC
   transmissionWebHome: "/ui/flood-for-transmission"
   puid: "1000"
   pgid: "1000"
-  tz: UTC
   user: admin
+
+# Alternative web UI (flood-for-transmission) downloaded into an emptyDir
+# by an init container on every pod start. Versions are pinned on purpose.
+webui:
+  image: curlimages/curl
+  imageTag: "8.11.1"
+  releaseVersion: "v1.0.1"
 
 ui:
   darkMode: "enabled"
@@ -37,7 +43,7 @@ serviceAccount:
   # Specifies whether a service account should be created
   create: false
   # Automatically mount a ServiceAccount's API credentials?
-  automount: true
+  automount: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -60,10 +66,11 @@ securityContext: {}
 
 service:
   type: ClusterIP
+  port: 9091
 
 ingress:
-  # -- Enable Ingress Creation
-  enabled: true
+  # -- Enable Ingress Creation (disabled by default; enable in your own values)
+  enabled: false
   ingresses:
     - className: ""
       # -- Annotations on the ingress object.
@@ -71,7 +78,7 @@ ingress:
       labels: {}
       # -- The hostname that should be used.
       hosts:
-        - host: transmission.casa-titi.com
+        - host: transmission.local
           paths:
             - path: /
               pathType: Prefix
@@ -97,17 +104,23 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-#livenessProbe:
-#  httpGet:
-#    path: /transmission/web
-#    port: http
-#readinessProbe:
-#  httpGet:
-#    path: /transmission/web
-#    port: http
+livenessProbe:
+  httpGet:
+    path: /transmission/web/
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 30
+readinessProbe:
+  httpGet:
+    path: /transmission/web/
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
 
+# Transmission is stateful; scaling beyond one replica is not supported,
+# so autoscaling should stay disabled.
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
   maxReplicas: 1
   targetCPUUtilizationPercentage: 80

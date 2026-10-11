@@ -9,6 +9,10 @@ spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  # Transmission keeps state in /config and /downloads; never run two
+  # pods side by side, so use Recreate instead of RollingUpdate.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "transmission.selectorLabels" . | nindent 6 }}
@@ -25,6 +29,9 @@ spec:
       {{- end }}
       labels:
         {{- include "transmission.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -39,11 +46,11 @@ spec:
             value: "1"      
       initContainers:
         - name: custom-webui
-          image: curlimages/curl:latest
+          image: "{{ .Values.webui.image }}:{{ .Values.webui.imageTag }}"
           command:
             - "/bin/sh"
             - "-c"
-            - "curl -o - -sL https://github.com/johman10/flood-for-transmission/releases/latest/download/flood-for-transmission.tar.gz | tar -C /ui -xzf -"
+            - "curl -o - -sL https://github.com/johman10/flood-for-transmission/releases/download/{{ .Values.webui.releaseVersion }}/flood-for-transmission.tar.gz | tar -C /ui -xzf -"
           volumeMounts:
             - name: ui-volume
               mountPath: /ui
@@ -63,10 +70,14 @@ spec:
             - name: udp
               containerPort: 51413
               protocol: UDP
+          {{- with .Values.livenessProbe }}
           livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
           readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -83,7 +94,7 @@ spec:
             - name: PASS
               valueFrom:
                 secretKeyRef:
-                  name: transmission-secrets
+                  name: {{ include "transmission.fullname" . }}-secrets
                   key: transmission-password
           envFrom:
             - configMapRef:
