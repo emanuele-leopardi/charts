@@ -1,0 +1,27 @@
+name: lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.16.4
+      - name: Download kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar -xz
+      - name: Lint and validate charts
+        run: |
+          fail=0
+          for d in */ ; do
+            [ -f "$d/Chart.yaml" ] || continue
+            echo "==> ${d%/}"
+            if ! helm lint "$d"; then fail=1; fi
+            if ! helm template test "$d" | ./kubeconform -strict -summary -ignore-missing-schemas; then fail=1; fi
+          done
+          exit $fail

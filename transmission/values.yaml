@@ -10,6 +10,8 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# Environment variables for the linuxserver/transmission container
+# (keys are upper-cased: transmissionWebHome -> TRANSMISSION_WEB_HOME).
 configMap:
   tz: UTC
   transmissionWebHome: "/ui/flood-for-transmission"
@@ -17,8 +19,9 @@ configMap:
   pgid: "1000"
   user: admin
 
-# Alternative web UI (flood-for-transmission) downloaded into an emptyDir
-# by an init container on every pod start. Versions are pinned on purpose.
+# Alternative web UI (flood-for-transmission). The tarball is downloaded once
+# into a cache directory inside the config volume and reused on every restart;
+# GitHub is only contacted again when releaseVersion changes.
 webui:
   image: curlimages/curl
   imageTag: "8.11.1"
@@ -34,6 +37,25 @@ ui:
   sortColumn: "Ratio"
   sortDirection: "asc"
   showDiskUsage: "true"
+
+# Host paths used for the downloads and config volumes.
+# Single-node cluster by design: the pod is meant to be pinned to this node.
+# Empty values fall back to the legacy configMap.downloads / configMap.config
+# keys and finally to the built-in defaults (/mnt and /opt/transmission/config).
+persistence:
+  downloads:
+    hostPath: ""
+  config:
+    hostPath: ""
+
+secrets:
+  # Set to false and fill existingSecret to use a Secret managed outside
+  # this chart (e.g. sealed-secrets / SOPS).
+  create: true
+  # Only used on first boot of an empty config volume: the linuxserver image
+  # applies USER/PASS just once, later changes need editing settings.json.
+  password: "changeme"
+  existingSecret: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -63,6 +85,13 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
+
+# Pod-level DNS configuration (ndots: 1 avoids the k8s search-path penalty
+# for the many plain hostnames the torrent swarm resolves).
+dnsConfig:
+  options:
+    - name: ndots
+      value: "1"
 
 service:
   type: ClusterIP
@@ -104,18 +133,28 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
+# Gates liveness/readiness: a big torrent library can take minutes to scan
+# resume files at boot; startupProbe gives it up to 5 minutes before the
+# liveness probe is allowed to kill the pod.
+startupProbe:
+  httpGet:
+    path: /transmission/web/
+    port: http
+  failureThreshold: 30
+  periodSeconds: 10
 livenessProbe:
   httpGet:
     path: /transmission/web/
     port: http
-  initialDelaySeconds: 30
   periodSeconds: 30
 readinessProbe:
   httpGet:
     path: /transmission/web/
     port: http
-  initialDelaySeconds: 10
   periodSeconds: 10
+
+# Time given to transmission on SIGTERM to flush resume files.
+terminationGracePeriodSeconds: 60
 
 # Transmission is stateful; scaling beyond one replica is not supported,
 # so autoscaling should stay disabled.

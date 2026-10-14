@@ -40,20 +40,43 @@ spec:
       serviceAccountName: {{ include "transmission.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.dnsConfig }}
       dnsConfig:
-        options:
-          - name: ndots
-            value: "1"      
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 60 }}
       initContainers:
         - name: custom-webui
           image: "{{ .Values.webui.image }}:{{ .Values.webui.imageTag }}"
+          # The cache dir lives in the config volume: root is needed because
+          # on first boot the kubelet may have created the hostPath dir with
+          # root ownership only.
+          securityContext:
+            runAsUser: 0
           command:
             - "/bin/sh"
             - "-c"
-            - "curl -o - -sL https://github.com/johman10/flood-for-transmission/releases/download/{{ .Values.webui.releaseVersion }}/flood-for-transmission.tar.gz | tar -C /ui -xzf -"
+            - |
+              set -e
+              V="{{ .Values.webui.releaseVersion }}"
+              URL="https://github.com/johman10/flood-for-transmission/releases/download/${V}/flood-for-transmission.tar.gz"
+              CACHE=/config/webui-cache
+              TARBALL="${CACHE}/flood-for-transmission.tar.gz"
+              if [ "$(cat "${CACHE}/version" 2>/dev/null)" = "${V}" ] && [ -s "${TARBALL}" ]; then
+                echo "webui: using cached release ${V}"
+              else
+                mkdir -p "${CACHE}" 2>/dev/null || true
+                curl -fsSL --retry 5 --retry-connrefused -o "${TARBALL}.new" "${URL}" \
+                  && mv "${TARBALL}.new" "${TARBALL}" \
+                  && echo "${V}" > "${CACHE}/version" \
+                  || { rm -f "${TARBALL}.new"; echo "webui: download failed, falling back to existing cache"; }
+              fi
+              tar -C /ui -xzf "${TARBALL}"
           volumeMounts:
             - name: ui-volume
               mountPath: /ui
+            - name: config-volume
+              mountPath: /config
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -70,6 +93,10 @@ spec:
             - name: udp
               containerPort: 51413
               protocol: UDP
+          {{- with .Values.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}
@@ -94,7 +121,7 @@ spec:
             - name: PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "transmission.fullname" . }}-secrets
+                  name: {{ .Values.secrets.existingSecret | default (printf "%s-secrets" (include "transmission.fullname" .)) }}
                   key: transmission-password
           envFrom:
             - configMapRef:
@@ -103,11 +130,11 @@ spec:
       volumes:
         - name: downloads-volume
           hostPath:
-            path: {{ .Values.configMap.downloads | default "/mnt" }}
+            path: {{ .Values.persistence.downloads.hostPath | default ((.Values.configMap).downloads) | default "/mnt" }}
             type: DirectoryOrCreate
         - name: config-volume
           hostPath:
-            path: {{ .Values.configMap.config | default "/opt/transmission/config" }}
+            path: {{ .Values.persistence.config.hostPath | default ((.Values.configMap).config) | default "/opt/transmission/config" }}
             type: DirectoryOrCreate
         - name: ui-volume
           emptyDir:
