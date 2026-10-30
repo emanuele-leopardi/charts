@@ -8,8 +8,10 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['{{ include "transmission.fullname" . }}:{{ .Values.service.port | default 9091 }}']
+    # Plain TCP check: wget/curl would get a 401 because Transmission
+    # requires basic auth on every HTTP path when USER/PASS are set.
+    - name: port-check
+      image: busybox:1.36
+      command: ['sh', '-c']
+      args: ['nc -z -w 5 {{ include "transmission.fullname" . }} {{ .Values.service.port | default 9091 }}']
   restartPolicy: Never

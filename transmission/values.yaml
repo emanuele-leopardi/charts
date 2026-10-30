@@ -133,23 +133,22 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-# Gates liveness/readiness: a big torrent library can take minutes to scan
-# resume files at boot; startupProbe gives it up to 5 minutes before the
-# liveness probe is allowed to kill the pod.
+# Probes use a plain TCP check on purpose: Transmission requires basic auth
+# for *every* HTTP path once USER/PASS are set (see handle_request() in
+# libtransmission/rpc-server.cc — is_authorized() runs before the web-client
+# branch), so an unauthenticated httpGet probe would always get a 401 and the
+# pod would never become Ready.
 startupProbe:
-  httpGet:
-    path: /transmission/web/
+  tcpSocket:
     port: http
   failureThreshold: 30
   periodSeconds: 10
 livenessProbe:
-  httpGet:
-    path: /transmission/web/
+  tcpSocket:
     port: http
   periodSeconds: 30
 readinessProbe:
-  httpGet:
-    path: /transmission/web/
+  tcpSocket:
     port: http
   periodSeconds: 10
 
