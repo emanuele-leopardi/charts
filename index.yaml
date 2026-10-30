@@ -1,20 +1,9 @@
 apiVersion: v1
 entries:
-  rustdesk-server:
-  - apiVersion: v2
-    appVersion: 1.16.0
-    created: "2026-10-14T19:45:52.165125087Z"
-    description: A Helm chart for rustdesk-server
-    digest: ac76b884518018680cd8bf20bde5d23cce7b0141bf568f388abea7351b1fd0de
-    name: rustdesk-server
-    type: application
-    urls:
-    - rustdesk-server-0.1.0.tgz
-    version: 0.1.0
   transfer.sh:
   - apiVersion: v2
     appVersion: v1.6.1
-    created: "2026-10-14T19:45:52.176622603Z"
+    created: "2026-10-30T10:17:40.365155888Z"
     dependencies:
     - name: common
       repository: https://bjw-s.github.io/helm-charts
@@ -30,7 +19,7 @@ entries:
   transmission:
   - apiVersion: v2
     appVersion: 4.1.3
-    created: "2026-10-14T19:45:52.184973921Z"
+    created: "2026-10-30T10:17:40.367968879Z"
     description: A Helm chart for Transmission (linuxserver image) with the flood-for-transmission
       web UI
     digest: 3274cbfa2288df61f7d06802dfff2056ab938b0c37c424bbe155ce343fac77f6
@@ -50,7 +39,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2026-10-14T19:45:52.182608925Z"
+    created: "2026-10-30T10:17:40.367317807Z"
     description: A Helm chart for Kubernetes
     digest: 643474f1950c506bc42e4fc0cf09d5f874eb1ce58b239e754bab1371b52deeb5
     name: transmission
@@ -60,7 +49,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2026-10-14T19:45:52.180666324Z"
+    created: "2026-10-30T10:17:40.366767069Z"
     description: A Helm chart for Kubernetes
     digest: 23e5ae9f63cbe7c2a578456bcebf079b8c128b7119620bf1c0a28257711f671d
     name: transmission
@@ -70,7 +59,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2026-10-14T19:45:52.178725163Z"
+    created: "2026-10-30T10:17:40.365647245Z"
     description: A Helm chart for Kubernetes
     digest: f50d98c87e21df11fe27f8c33abbf0545ae50fd3bcf42695ca6dc5adef947765
     name: transmission
@@ -81,7 +70,7 @@ entries:
   weave-gitops:
   - apiVersion: v2
     appVersion: v0.38.0
-    created: "2026-10-14T19:45:52.190876433Z"
+    created: "2026-10-30T10:17:40.368649497Z"
     description: Weave Gitops is a set of tools and services to aid your interactions
       with Flux
     digest: 379360d207a8432741349b0ae9e016daad7bce686d89c2801793dcdc34543a0b
@@ -90,4 +79,4 @@ entries:
     urls:
     - weave-gitops-4.0.36.tgz
     version: 4.0.36
-generated: "2026-10-14T19:45:52.162522182Z"
+generated: "2026-10-30T10:17:40.361451606Z"
