@@ -46,6 +46,15 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 60 }}
       initContainers:
+        # LinuxServer's default settings.json uses /downloads/complete and
+        # /downloads/incomplete; create them before the app starts so its
+        # permission fix-up works and downloads have a target directory.
+        - name: prepare-dirs
+          image: busybox:1.36
+          command: ["sh", "-c", "mkdir -p /downloads/complete /downloads/incomplete"]
+          volumeMounts:
+            - name: downloads-volume
+              mountPath: /downloads
         - name: custom-webui
           image: "{{ .Values.webui.image }}:{{ .Values.webui.imageTag }}"
           # The cache dir lives in the config volume: root is needed because
@@ -114,6 +123,10 @@ spec:
               name: config-volume
             - name: ui-volume
               mountPath: /ui
+            # LinuxServer enables watch-dir (/watch) by default; without a
+            # writable mount transmission logs an inotify error at startup.
+            - name: watch-volume
+              mountPath: /watch
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -139,6 +152,8 @@ spec:
         - name: ui-volume
           emptyDir:
             sizeLimit: 500Mi
+        - name: watch-volume
+          emptyDir: {}
       {{- with .Values.volumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}

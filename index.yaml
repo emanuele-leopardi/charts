@@ -3,7 +3,7 @@ entries:
   transfer.sh:
   - apiVersion: v2
     appVersion: v1.6.1
-    created: "2026-10-30T23:52:17.859642345Z"
+    created: "2026-11-06T22:14:16.621720926Z"
     dependencies:
     - name: common
       repository: https://bjw-s.github.io/helm-charts
@@ -19,7 +19,27 @@ entries:
   transmission:
   - apiVersion: v2
     appVersion: 4.1.3
-    created: "2026-10-30T23:52:17.862419124Z"
+    created: "2026-11-06T22:14:16.626222193Z"
+    description: A Helm chart for Transmission (linuxserver image) with the flood-for-transmission
+      web UI
+    digest: b92d99def26c19ffc5a6778a145982b6068b0d09c821e3bb95bb4c6355c8c918
+    home: https://transmissionbt.com
+    keywords:
+    - transmission
+    - bittorrent
+    - torrent
+    maintainers:
+    - name: emanuele-leopardi
+    name: transmission
+    sources:
+    - https://github.com/emanuele-leopardi/charts
+    type: application
+    urls:
+    - transmission-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v2
+    appVersion: 4.1.3
+    created: "2026-11-06T22:14:16.624872909Z"
     description: A Helm chart for Transmission (linuxserver image) with the flood-for-transmission
       web UI
     digest: 7d9f19636ea11ba89c5f49bff1c49684eed30140fdff99ad78d43c0c6d737631
@@ -39,7 +59,7 @@ entries:
     version: 0.2.1
   - apiVersion: v2
     appVersion: 4.1.3
-    created: "2026-10-30T23:52:17.861776274Z"
+    created: "2026-11-06T22:14:16.624083336Z"
     description: A Helm chart for Transmission (linuxserver image) with the flood-for-transmission
       web UI
     digest: 3274cbfa2288df61f7d06802dfff2056ab938b0c37c424bbe155ce343fac77f6
@@ -59,7 +79,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2026-10-30T23:52:17.861134906Z"
+    created: "2026-11-06T22:14:16.623462267Z"
     description: A Helm chart for Kubernetes
     digest: 643474f1950c506bc42e4fc0cf09d5f874eb1ce58b239e754bab1371b52deeb5
     name: transmission
@@ -69,7 +89,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2026-10-30T23:52:17.860612535Z"
+    created: "2026-11-06T22:14:16.622933585Z"
     description: A Helm chart for Kubernetes
     digest: 23e5ae9f63cbe7c2a578456bcebf079b8c128b7119620bf1c0a28257711f671d
     name: transmission
@@ -79,7 +99,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: 4.0.6
-    created: "2026-10-30T23:52:17.86012599Z"
+    created: "2026-11-06T22:14:16.622463769Z"
     description: A Helm chart for Kubernetes
     digest: f50d98c87e21df11fe27f8c33abbf0545ae50fd3bcf42695ca6dc5adef947765
     name: transmission
@@ -90,7 +110,7 @@ entries:
   weave-gitops:
   - apiVersion: v2
     appVersion: v0.38.0
-    created: "2026-10-30T23:52:17.863602718Z"
+    created: "2026-11-06T22:14:16.626906173Z"
     description: Weave Gitops is a set of tools and services to aid your interactions
       with Flux
     digest: 379360d207a8432741349b0ae9e016daad7bce686d89c2801793dcdc34543a0b
@@ -99,4 +119,4 @@ entries:
     urls:
     - weave-gitops-4.0.36.tgz
     version: 4.0.36
-generated: "2026-10-30T23:52:17.855944154Z"
+generated: "2026-11-06T22:14:16.618303282Z"
