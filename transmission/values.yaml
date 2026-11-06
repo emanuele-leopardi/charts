@@ -133,25 +133,6 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-# Probes use a plain TCP check on purpose: Transmission requires basic auth
-# for *every* HTTP path once USER/PASS are set (see handle_request() in
-# libtransmission/rpc-server.cc — is_authorized() runs before the web-client
-# branch), so an unauthenticated httpGet probe would always get a 401 and the
-# pod would never become Ready.
-startupProbe:
-  tcpSocket:
-    port: http
-  failureThreshold: 30
-  periodSeconds: 10
-livenessProbe:
-  tcpSocket:
-    port: http
-  periodSeconds: 30
-readinessProbe:
-  tcpSocket:
-    port: http
-  periodSeconds: 10
-
 # Time given to transmission on SIGTERM to flush resume files.
 terminationGracePeriodSeconds: 60
 

@@ -102,18 +102,23 @@ spec:
             - name: udp
               containerPort: 51413
               protocol: UDP
-          {{- with .Values.startupProbe }}
+          # tcpSocket probes: Transmission requires Basic Auth on every HTTP path
+          # when USER/PASS are set, so httpGet probes would always return 401.
+          # See libtransmission/rpc-server.cc handle_request() -> is_authorized()
+          # which runs before the web-client branch.
           startupProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.livenessProbe }}
+            tcpSocket:
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
           livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
+            tcpSocket:
+              port: http
+            periodSeconds: 30
           readinessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            tcpSocket:
+              port: http
+            periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
