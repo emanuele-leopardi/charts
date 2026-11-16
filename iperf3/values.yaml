@@ -1,0 +1,72 @@
+# Default values for iperf3.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  # Static binary only: no shell, no package manager, no libc to patch.
+  repository: tangentsoft/iperf3
+  # Version tag for humans; the digest is what actually pins the content.
+  tag: "v3.22"
+  digest: "sha256:079ff8ebbfd22c2502d7014524dcacf71eee43f6608ac3d39142a5efc953b78c"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: LoadBalancer
+  # Keep the long-standing endpoint (192.168.0.11:8080) and its node port, so
+  # clients do not need to change anything when the chart takes over.
+  port: 8080
+  nodePort: 31001
+  annotations: {}
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  # nobody:nogroup. The server listens on 8080, so no privileged port is needed.
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65534
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 16Mi
+  limits:
+    # Deliberately no CPU limit: a throttled iperf3 reports the limit as if it
+    # were the network's throughput.
+    memory: 128Mi
+
+livenessProbe:
+  tcpSocket:
+    port: tcp
+  initialDelaySeconds: 5
+  periodSeconds: 60
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  tcpSocket:
+    port: tcp
+  initialDelaySeconds: 2
+  periodSeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

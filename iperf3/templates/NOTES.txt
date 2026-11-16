@@ -1,0 +1,7 @@
+iperf3 is listening on port {{ .Values.service.port }} ({{ .Values.service.type }}).
+
+Start a test with:
+
+  iperf3 -c <address> -p {{ .Values.service.port }}
+
+Image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
