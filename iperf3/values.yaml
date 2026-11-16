@@ -27,6 +27,12 @@ service:
 podAnnotations: {}
 podLabels: {}
 
+# iperf3 3.22 creates and mmaps a temporary file per stream under /tmp. The
+# container runs with a read-only root filesystem, so /tmp must be an
+# emptyDir or every test fails with "unable to create a new stream".
+tmpDir:
+  sizeLimit: 16Mi
+
 podSecurityContext:
   # nobody:nogroup. The server listens on 8080, so no privileged port is needed.
   runAsNonRoot: true
